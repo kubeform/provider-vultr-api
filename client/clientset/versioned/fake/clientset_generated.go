@@ -32,6 +32,8 @@ import (
 	fakeinstancev1alpha1 "kubeform.dev/provider-vultr-api/client/clientset/versioned/typed/instance/v1alpha1/fake"
 	isov1alpha1 "kubeform.dev/provider-vultr-api/client/clientset/versioned/typed/iso/v1alpha1"
 	fakeisov1alpha1 "kubeform.dev/provider-vultr-api/client/clientset/versioned/typed/iso/v1alpha1/fake"
+	kubernetesv1alpha1 "kubeform.dev/provider-vultr-api/client/clientset/versioned/typed/kubernetes/v1alpha1"
+	fakekubernetesv1alpha1 "kubeform.dev/provider-vultr-api/client/clientset/versioned/typed/kubernetes/v1alpha1/fake"
 	loadv1alpha1 "kubeform.dev/provider-vultr-api/client/clientset/versioned/typed/load/v1alpha1"
 	fakeloadv1alpha1 "kubeform.dev/provider-vultr-api/client/clientset/versioned/typed/load/v1alpha1/fake"
 	objectv1alpha1 "kubeform.dev/provider-vultr-api/client/clientset/versioned/typed/object/v1alpha1"
@@ -133,6 +135,11 @@ func (c *Clientset) InstanceV1alpha1() instancev1alpha1.InstanceV1alpha1Interfac
 // IsoV1alpha1 retrieves the IsoV1alpha1Client
 func (c *Clientset) IsoV1alpha1() isov1alpha1.IsoV1alpha1Interface {
 	return &fakeisov1alpha1.FakeIsoV1alpha1{Fake: &c.Fake}
+}
+
+// KubernetesV1alpha1 retrieves the KubernetesV1alpha1Client
+func (c *Clientset) KubernetesV1alpha1() kubernetesv1alpha1.KubernetesV1alpha1Interface {
+	return &fakekubernetesv1alpha1.FakeKubernetesV1alpha1{Fake: &c.Fake}
 }
 
 // LoadV1alpha1 retrieves the LoadV1alpha1Client

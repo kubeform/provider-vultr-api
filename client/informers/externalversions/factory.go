@@ -31,6 +31,7 @@ import (
 	instance "kubeform.dev/provider-vultr-api/client/informers/externalversions/instance"
 	internalinterfaces "kubeform.dev/provider-vultr-api/client/informers/externalversions/internalinterfaces"
 	iso "kubeform.dev/provider-vultr-api/client/informers/externalversions/iso"
+	kubernetes "kubeform.dev/provider-vultr-api/client/informers/externalversions/kubernetes"
 	load "kubeform.dev/provider-vultr-api/client/informers/externalversions/load"
 	object "kubeform.dev/provider-vultr-api/client/informers/externalversions/object"
 	private "kubeform.dev/provider-vultr-api/client/informers/externalversions/private"
@@ -193,6 +194,7 @@ type SharedInformerFactory interface {
 	Firewall() firewall.Interface
 	Instance() instance.Interface
 	Iso() iso.Interface
+	Kubernetes() kubernetes.Interface
 	Load() load.Interface
 	Object() object.Interface
 	Private() private.Interface
@@ -226,6 +228,10 @@ func (f *sharedInformerFactory) Instance() instance.Interface {
 
 func (f *sharedInformerFactory) Iso() iso.Interface {
 	return iso.New(f, f.namespace, f.tweakListOptions)
+}
+
+func (f *sharedInformerFactory) Kubernetes() kubernetes.Interface {
+	return kubernetes.New(f, f.namespace, f.tweakListOptions)
 }
 
 func (f *sharedInformerFactory) Load() load.Interface {

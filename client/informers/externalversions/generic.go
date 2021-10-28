@@ -27,6 +27,7 @@ import (
 	firewallv1alpha1 "kubeform.dev/provider-vultr-api/apis/firewall/v1alpha1"
 	instancev1alpha1 "kubeform.dev/provider-vultr-api/apis/instance/v1alpha1"
 	isov1alpha1 "kubeform.dev/provider-vultr-api/apis/iso/v1alpha1"
+	kubernetesv1alpha1 "kubeform.dev/provider-vultr-api/apis/kubernetes/v1alpha1"
 	loadv1alpha1 "kubeform.dev/provider-vultr-api/apis/load/v1alpha1"
 	objectv1alpha1 "kubeform.dev/provider-vultr-api/apis/object/v1alpha1"
 	privatev1alpha1 "kubeform.dev/provider-vultr-api/apis/private/v1alpha1"
@@ -96,6 +97,12 @@ func (f *sharedInformerFactory) ForResource(resource schema.GroupVersionResource
 		// Group=iso.vultr.kubeform.com, Version=v1alpha1
 	case isov1alpha1.SchemeGroupVersion.WithResource("privates"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Iso().V1alpha1().Privates().Informer()}, nil
+
+		// Group=kubernetes.vultr.kubeform.com, Version=v1alpha1
+	case kubernetesv1alpha1.SchemeGroupVersion.WithResource("kuberneteses"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Kubernetes().V1alpha1().Kuberneteses().Informer()}, nil
+	case kubernetesv1alpha1.SchemeGroupVersion.WithResource("nodepoolses"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Kubernetes().V1alpha1().NodePoolses().Informer()}, nil
 
 		// Group=load.vultr.kubeform.com, Version=v1alpha1
 	case loadv1alpha1.SchemeGroupVersion.WithResource("balancers"):

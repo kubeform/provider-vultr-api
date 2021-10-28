@@ -31,40 +31,33 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/webhook"
 )
 
-func (r *Instance) SetupWebhookWithManager(mgr ctrl.Manager) error {
+func (r *Kubernetes) SetupWebhookWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewWebhookManagedBy(mgr).
 		For(r).
 		Complete()
 }
 
-//+kubebuilder:webhook:verbs=create;update;delete,path=/validate-instance-vultr-kubeform-com-v1alpha1-instance,mutating=false,failurePolicy=fail,groups=instance.vultr.kubeform.com,resources=instances,versions=v1alpha1,name=instance.instance.vultr.kubeform.io,sideEffects=None,admissionReviewVersions=v1
+//+kubebuilder:webhook:verbs=create;update;delete,path=/validate-kubernetes-vultr-kubeform-com-v1alpha1-kubernetes,mutating=false,failurePolicy=fail,groups=kubernetes.vultr.kubeform.com,resources=kubernetes,versions=v1alpha1,name=kubernetes.kubernetes.vultr.kubeform.io,sideEffects=None,admissionReviewVersions=v1
 
-var _ webhook.Validator = &Instance{}
+var _ webhook.Validator = &Kubernetes{}
 
-var instanceForceNewList = map[string]bool{
-	"/app_id":         true,
-	"/image_id":       true,
-	"/os_id":          true,
-	"/region":         true,
-	"/reserved_ip_id": true,
-	"/script_id":      true,
-	"/snapshot_id":    true,
-	"/ssh_key_ids":    true,
-	"/user_data":      true,
+var kubernetesForceNewList = map[string]bool{
+	"/region":  true,
+	"/version": true,
 }
 
 // ValidateCreate implements webhook.Validator so a webhook will be registered for the type
-func (r *Instance) ValidateCreate() error {
+func (r *Kubernetes) ValidateCreate() error {
 	return nil
 }
 
 // ValidateUpdate implements webhook.Validator so a webhook will be registered for the type
-func (r *Instance) ValidateUpdate(old runtime.Object) error {
+func (r *Kubernetes) ValidateUpdate(old runtime.Object) error {
 	if r.Spec.Resource.ID == "" {
 		return nil
 	}
 	newObj := r.Spec.Resource
-	res := old.(*Instance)
+	res := old.(*Kubernetes)
 	oldObj := res.Spec.Resource
 
 	jsnitr := jsoniter.Config{
@@ -96,7 +89,7 @@ func (r *Instance) ValidateUpdate(old runtime.Object) error {
 		return err
 	}
 
-	for key := range instanceForceNewList {
+	for key := range kubernetesForceNewList {
 		keySplit := strings.Split(key, "/*")
 		length := len(keySplit)
 		checkIfAnyDif := false
@@ -104,16 +97,16 @@ func (r *Instance) ValidateUpdate(old runtime.Object) error {
 		util.CheckIfAnyDifference("", keySplit, 0, length, &checkIfAnyDif, tempNew, tempOld, tempNew)
 
 		if checkIfAnyDif && r.Spec.UpdatePolicy == base.UpdatePolicyDoNotDestroy {
-			return fmt.Errorf(`instance "%v/%v" immutable field can't be updated. To update, change spec.updatePolicy to Destroy`, r.Namespace, r.Name)
+			return fmt.Errorf(`kubernetes "%v/%v" immutable field can't be updated. To update, change spec.updatePolicy to Destroy`, r.Namespace, r.Name)
 		}
 	}
 	return nil
 }
 
 // ValidateDelete implements webhook.Validator so a webhook will be registered for the type
-func (r *Instance) ValidateDelete() error {
+func (r *Kubernetes) ValidateDelete() error {
 	if r.Spec.TerminationPolicy == base.TerminationPolicyDoNotTerminate {
-		return fmt.Errorf(`instance "%v/%v" can't be terminated. To delete, change spec.terminationPolicy to Delete`, r.Namespace, r.Name)
+		return fmt.Errorf(`kubernetes "%v/%v" can't be terminated. To delete, change spec.terminationPolicy to Delete`, r.Namespace, r.Name)
 	}
 	return nil
 }
