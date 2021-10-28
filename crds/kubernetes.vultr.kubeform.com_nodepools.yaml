@@ -5,14 +5,14 @@ metadata:
   labels:
     app.kubernetes.io/name: vultr.kubeform.com
     app.kubernetes.io/part-of: kubeform.com
-  name: metalservers.bare.vultr.kubeform.com
+  name: nodepools.kubernetes.vultr.kubeform.com
 spec:
-  group: bare.vultr.kubeform.com
+  group: kubernetes.vultr.kubeform.com
   names:
-    kind: MetalServer
-    listKind: MetalServerList
-    plural: metalservers
-    singular: metalserver
+    kind: NodePools
+    listKind: NodePoolsList
+    plural: nodepools
+    singular: nodepools
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -57,154 +57,83 @@ spec:
                 type: object
               resource:
                 properties:
-                  activationEmail:
-                    type: boolean
-                  appID:
-                    format: int64
-                    type: integer
-                  cpuCount:
-                    format: int64
-                    type: integer
+                  clusterID:
+                    type: string
                   dateCreated:
                     type: string
-                  disk:
-                    type: string
-                  enableIpv6:
-                    type: boolean
-                  gatewayV4:
-                    type: string
-                  hostname:
+                  dateUpdated:
                     type: string
                   id:
                     type: string
-                  imageID:
-                    type: string
                   label:
                     type: string
-                  macAddress:
+                  nodeQuantity:
                     format: int64
                     type: integer
-                  mainIP:
-                    type: string
-                  netmaskV4:
-                    type: string
-                  os:
-                    type: string
-                  osID:
-                    format: int64
-                    type: integer
+                  nodes:
+                    items:
+                      properties:
+                        ID:
+                          type: string
+                        dateCreated:
+                          type: string
+                        label:
+                          type: string
+                        status:
+                          type: string
+                      type: object
+                    type: array
                   plan:
                     type: string
-                  ram:
-                    type: string
-                  region:
-                    type: string
-                  reservedIpv4:
-                    type: string
-                  scriptID:
-                    type: string
-                  snapshotID:
-                    type: string
-                  sshKeyIDS:
-                    items:
-                      type: string
-                    type: array
                   status:
                     type: string
                   tag:
                     type: string
-                  userData:
-                    type: string
-                  v6MainIP:
-                    type: string
-                  v6Network:
-                    type: string
-                  v6NetworkSize:
-                    format: int64
-                    type: integer
                 required:
+                - clusterID
+                - label
+                - nodeQuantity
                 - plan
-                - region
-                type: object
-              secretRef:
-                description: LocalObjectReference contains enough information to let
-                  you locate the referenced object inside the same namespace.
-                properties:
-                  name:
-                    description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                      TODO: Add other useful fields. apiVersion, kind, uid?'
-                    type: string
                 type: object
               state:
                 properties:
-                  activationEmail:
-                    type: boolean
-                  appID:
-                    format: int64
-                    type: integer
-                  cpuCount:
-                    format: int64
-                    type: integer
+                  clusterID:
+                    type: string
                   dateCreated:
                     type: string
-                  disk:
-                    type: string
-                  enableIpv6:
-                    type: boolean
-                  gatewayV4:
-                    type: string
-                  hostname:
+                  dateUpdated:
                     type: string
                   id:
                     type: string
-                  imageID:
-                    type: string
                   label:
                     type: string
-                  macAddress:
+                  nodeQuantity:
                     format: int64
                     type: integer
-                  mainIP:
-                    type: string
-                  netmaskV4:
-                    type: string
-                  os:
-                    type: string
-                  osID:
-                    format: int64
-                    type: integer
+                  nodes:
+                    items:
+                      properties:
+                        ID:
+                          type: string
+                        dateCreated:
+                          type: string
+                        label:
+                          type: string
+                        status:
+                          type: string
+                      type: object
+                    type: array
                   plan:
                     type: string
-                  ram:
-                    type: string
-                  region:
-                    type: string
-                  reservedIpv4:
-                    type: string
-                  scriptID:
-                    type: string
-                  snapshotID:
-                    type: string
-                  sshKeyIDS:
-                    items:
-                      type: string
-                    type: array
                   status:
                     type: string
                   tag:
                     type: string
-                  userData:
-                    type: string
-                  v6MainIP:
-                    type: string
-                  v6Network:
-                    type: string
-                  v6NetworkSize:
-                    format: int64
-                    type: integer
                 required:
+                - clusterID
+                - label
+                - nodeQuantity
                 - plan
-                - region
                 type: object
               terminationPolicy:
                 enum:

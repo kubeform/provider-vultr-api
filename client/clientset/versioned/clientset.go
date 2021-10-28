@@ -27,6 +27,7 @@ import (
 	firewallv1alpha1 "kubeform.dev/provider-vultr-api/client/clientset/versioned/typed/firewall/v1alpha1"
 	instancev1alpha1 "kubeform.dev/provider-vultr-api/client/clientset/versioned/typed/instance/v1alpha1"
 	isov1alpha1 "kubeform.dev/provider-vultr-api/client/clientset/versioned/typed/iso/v1alpha1"
+	kubernetesv1alpha1 "kubeform.dev/provider-vultr-api/client/clientset/versioned/typed/kubernetes/v1alpha1"
 	loadv1alpha1 "kubeform.dev/provider-vultr-api/client/clientset/versioned/typed/load/v1alpha1"
 	objectv1alpha1 "kubeform.dev/provider-vultr-api/client/clientset/versioned/typed/object/v1alpha1"
 	privatev1alpha1 "kubeform.dev/provider-vultr-api/client/clientset/versioned/typed/private/v1alpha1"
@@ -50,6 +51,7 @@ type Interface interface {
 	FirewallV1alpha1() firewallv1alpha1.FirewallV1alpha1Interface
 	InstanceV1alpha1() instancev1alpha1.InstanceV1alpha1Interface
 	IsoV1alpha1() isov1alpha1.IsoV1alpha1Interface
+	KubernetesV1alpha1() kubernetesv1alpha1.KubernetesV1alpha1Interface
 	LoadV1alpha1() loadv1alpha1.LoadV1alpha1Interface
 	ObjectV1alpha1() objectv1alpha1.ObjectV1alpha1Interface
 	PrivateV1alpha1() privatev1alpha1.PrivateV1alpha1Interface
@@ -65,21 +67,22 @@ type Interface interface {
 // version included in a Clientset.
 type Clientset struct {
 	*discovery.DiscoveryClient
-	bareV1alpha1     *barev1alpha1.BareV1alpha1Client
-	blockV1alpha1    *blockv1alpha1.BlockV1alpha1Client
-	dnsV1alpha1      *dnsv1alpha1.DnsV1alpha1Client
-	firewallV1alpha1 *firewallv1alpha1.FirewallV1alpha1Client
-	instanceV1alpha1 *instancev1alpha1.InstanceV1alpha1Client
-	isoV1alpha1      *isov1alpha1.IsoV1alpha1Client
-	loadV1alpha1     *loadv1alpha1.LoadV1alpha1Client
-	objectV1alpha1   *objectv1alpha1.ObjectV1alpha1Client
-	privateV1alpha1  *privatev1alpha1.PrivateV1alpha1Client
-	reservedV1alpha1 *reservedv1alpha1.ReservedV1alpha1Client
-	reverseV1alpha1  *reversev1alpha1.ReverseV1alpha1Client
-	snapshotV1alpha1 *snapshotv1alpha1.SnapshotV1alpha1Client
-	sshV1alpha1      *sshv1alpha1.SshV1alpha1Client
-	startupV1alpha1  *startupv1alpha1.StartupV1alpha1Client
-	userV1alpha1     *userv1alpha1.UserV1alpha1Client
+	bareV1alpha1       *barev1alpha1.BareV1alpha1Client
+	blockV1alpha1      *blockv1alpha1.BlockV1alpha1Client
+	dnsV1alpha1        *dnsv1alpha1.DnsV1alpha1Client
+	firewallV1alpha1   *firewallv1alpha1.FirewallV1alpha1Client
+	instanceV1alpha1   *instancev1alpha1.InstanceV1alpha1Client
+	isoV1alpha1        *isov1alpha1.IsoV1alpha1Client
+	kubernetesV1alpha1 *kubernetesv1alpha1.KubernetesV1alpha1Client
+	loadV1alpha1       *loadv1alpha1.LoadV1alpha1Client
+	objectV1alpha1     *objectv1alpha1.ObjectV1alpha1Client
+	privateV1alpha1    *privatev1alpha1.PrivateV1alpha1Client
+	reservedV1alpha1   *reservedv1alpha1.ReservedV1alpha1Client
+	reverseV1alpha1    *reversev1alpha1.ReverseV1alpha1Client
+	snapshotV1alpha1   *snapshotv1alpha1.SnapshotV1alpha1Client
+	sshV1alpha1        *sshv1alpha1.SshV1alpha1Client
+	startupV1alpha1    *startupv1alpha1.StartupV1alpha1Client
+	userV1alpha1       *userv1alpha1.UserV1alpha1Client
 }
 
 // BareV1alpha1 retrieves the BareV1alpha1Client
@@ -110,6 +113,11 @@ func (c *Clientset) InstanceV1alpha1() instancev1alpha1.InstanceV1alpha1Interfac
 // IsoV1alpha1 retrieves the IsoV1alpha1Client
 func (c *Clientset) IsoV1alpha1() isov1alpha1.IsoV1alpha1Interface {
 	return c.isoV1alpha1
+}
+
+// KubernetesV1alpha1 retrieves the KubernetesV1alpha1Client
+func (c *Clientset) KubernetesV1alpha1() kubernetesv1alpha1.KubernetesV1alpha1Interface {
+	return c.kubernetesV1alpha1
 }
 
 // LoadV1alpha1 retrieves the LoadV1alpha1Client
@@ -202,6 +210,10 @@ func NewForConfig(c *rest.Config) (*Clientset, error) {
 	if err != nil {
 		return nil, err
 	}
+	cs.kubernetesV1alpha1, err = kubernetesv1alpha1.NewForConfig(&configShallowCopy)
+	if err != nil {
+		return nil, err
+	}
 	cs.loadV1alpha1, err = loadv1alpha1.NewForConfig(&configShallowCopy)
 	if err != nil {
 		return nil, err
@@ -256,6 +268,7 @@ func NewForConfigOrDie(c *rest.Config) *Clientset {
 	cs.firewallV1alpha1 = firewallv1alpha1.NewForConfigOrDie(c)
 	cs.instanceV1alpha1 = instancev1alpha1.NewForConfigOrDie(c)
 	cs.isoV1alpha1 = isov1alpha1.NewForConfigOrDie(c)
+	cs.kubernetesV1alpha1 = kubernetesv1alpha1.NewForConfigOrDie(c)
 	cs.loadV1alpha1 = loadv1alpha1.NewForConfigOrDie(c)
 	cs.objectV1alpha1 = objectv1alpha1.NewForConfigOrDie(c)
 	cs.privateV1alpha1 = privatev1alpha1.NewForConfigOrDie(c)
@@ -279,6 +292,7 @@ func New(c rest.Interface) *Clientset {
 	cs.firewallV1alpha1 = firewallv1alpha1.New(c)
 	cs.instanceV1alpha1 = instancev1alpha1.New(c)
 	cs.isoV1alpha1 = isov1alpha1.New(c)
+	cs.kubernetesV1alpha1 = kubernetesv1alpha1.New(c)
 	cs.loadV1alpha1 = loadv1alpha1.New(c)
 	cs.objectV1alpha1 = objectv1alpha1.New(c)
 	cs.privateV1alpha1 = privatev1alpha1.New(c)
