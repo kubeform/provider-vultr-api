@@ -68,6 +68,7 @@ spec:
                   ip:
                     type: string
                   kubeConfig:
+                    description: Base64 encoded KubeConfig
                     type: string
                   label:
                     type: string
@@ -135,6 +136,7 @@ spec:
                   ip:
                     type: string
                   kubeConfig:
+                    description: Base64 encoded KubeConfig
                     type: string
                   label:
                     type: string
